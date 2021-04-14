@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 
 import "components/Application.scss";
 import DayList from "components/DayList";
@@ -84,13 +84,11 @@ export default function Application(props) {
 
   const appointmentArray = appointments.map(appointment => {
     return (
-        <Appointment
-          key={appointment.id}
-          {...appointment}
-          
-        />
+      <Appointment
+        key={appointment.id}
+        {...appointment}
+      />
     )
-
   })
 
 
