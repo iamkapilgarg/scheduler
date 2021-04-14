@@ -13,7 +13,7 @@ const InterviewerListItem = (props) => {
   });
 
   return (
-    <li className={interviewerListItemClassList} onClick={props.setInterviewer}>
+    <li className={interviewerListItemClassList} onClick={props.onChange}>
       <img
         className={interviewerListItemClassImage}
         src={props.avatar}
