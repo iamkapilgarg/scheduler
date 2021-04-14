@@ -5,21 +5,15 @@ import InterviewerListItem from "components/InterviewerListItem";
 const InterviewerList = (props) => {
 
   const interviewListArray = props.interviewers.map(interviewer => {
-    
-    let selectedName = '';
-    if(props.interviewer) {
-      if(interviewer.id === props.interviewer) {
-        selectedName = interviewer.name;
-      }
-    }
 
     return (
-        <InterviewerListItem
-          avatar={interviewer.avatar}
-          name={interviewer.name}
-          setInterviewer={interviewer.setInterviewer}
-          selectedName={selectedName}
-        />
+      <InterviewerListItem
+        key={interviewer.id}
+        avatar={interviewer.avatar}
+        name={interviewer.name}
+        selected={interviewer.id === props.interviewer}
+        setInterviewer={event => props.setInterviewer(interviewer.id)}
+      />
     );
   })
 
@@ -28,7 +22,7 @@ const InterviewerList = (props) => {
       <h4 className="interviewers__header text--light">
       </h4>
       <ul className="interviewers__list">
-      {interviewListArray}
+        {interviewListArray}
       </ul>
     </section>
   );

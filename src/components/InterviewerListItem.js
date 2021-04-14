@@ -5,22 +5,21 @@ import classnames from "classnames";
 const InterviewerListItem = (props) => {
 
   const interviewerListItemClassList = classnames("interviewers__item",{
-    "interviewers__item--selected": props.selectedName
+    "interviewers__item--selected": props.selected
   });
 
   const interviewerListItemClassImage = classnames("interviewers__item-image",{
-    "interviewers__item-image--selected": props.selectedName
+    "interviewers__item-image--selected": props.selected
   });
 
   return (
-    <li className={interviewerListItemClassList}>
+    <li className={interviewerListItemClassList} onClick={props.setInterviewer}>
       <img
         className={interviewerListItemClassImage}
         src={props.avatar}
         alt={props.name}
-        onClick={()=>props.setInterviewer()}
       />
-    {props.selectedName}
+      {props.selected ? props.name : ''}
     </li>
   );
 }
