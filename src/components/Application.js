@@ -33,9 +33,7 @@ export default function Application(props) {
   const dailyAppointments = getAppointmentsForDay(state, state.day);
 
   const appointmentArray = dailyAppointments.map(appointment => {
-
     const interview = getInterview(state, appointment.interview)
-
     return (
       <Appointment
         key={appointment.id}
@@ -45,8 +43,6 @@ export default function Application(props) {
       />
     )
   })
-
-
 
   return (
     <main className='layout'>
