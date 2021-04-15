@@ -12,4 +12,15 @@ const getAppointmentsForDay = (state, day) => {
   return appointmentsArray;
 }
 
-module.exports = { getAppointmentsForDay };
+const getInterview = (state, interview) => {
+  if(interview) {
+    const obj = {
+      student: interview.student, 
+      interviewer: state.interviewers[interview.interviewer]
+    }
+    return obj;
+  }
+  return null;
+}
+
+module.exports = { getAppointmentsForDay, getInterview };
