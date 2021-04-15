@@ -1,12 +1,12 @@
-import React from "react";
+import React from 'react';
 
-import { render, cleanup } from "@testing-library/react";
+import { render, cleanup } from '@testing-library/react';
 
-import DayListItem from "components/DayListItem";
+import DayListItem from 'components/DayListItem';
 
 afterEach(cleanup);
 
-it("renders without crashing", () => {
+it('renders without crashing', () => {
   render(<DayListItem />);
 });
 

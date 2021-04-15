@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
-import "components/Application.scss";
-import DayList from "components/DayList";
-import Appointment from "components/Appointment/index";
-import axios from "axios";
-import { getAppointmentsForDay } from "helpers/selectors";
+import 'components/Application.scss';
+import DayList from 'components/DayList';
+import Appointment from 'components/Appointment/index';
+import axios from 'axios';
+import { getAppointmentsForDay } from 'helpers/selectors';
 
 
 export default function Application(props) {
   
   const [state, setState] = useState({
-    day: "Monday",
+    day: 'Monday',
     days: [],
     appointments: {}
   });
@@ -20,7 +20,7 @@ export default function Application(props) {
   };
   
   useEffect(() => {
-    console.log("useEffect is called");
+    console.log('useEffect is called');
     Promise.all([
       axios.get('/api/days'),
       axios.get('/api/appointments')
@@ -44,15 +44,15 @@ export default function Application(props) {
 
 
   return (
-    <main className="layout">
-      <section className="sidebar">
+    <main className='layout'>
+      <section className='sidebar'>
         <img
-          className="sidebar--centered"
-          src="images/logo.png"
-          alt="Interview Scheduler"
+          className='sidebar--centered'
+          src='images/logo.png'
+          alt='Interview Scheduler'
         />
-        <hr className="sidebar__separator sidebar--centered" />
-        <nav className="sidebar__menu">
+        <hr className='sidebar__separator sidebar--centered' />
+        <nav className='sidebar__menu'>
           <DayList
             days={state.days}
             day={state.day}
@@ -60,14 +60,14 @@ export default function Application(props) {
           />
         </nav>
         <img
-          className="sidebar__lhl sidebar--centered"
-          src="images/lhl.png"
-          alt="Lighthouse Labs"
+          className='sidebar__lhl sidebar--centered'
+          src='images/lhl.png'
+          alt='Lighthouse Labs'
         />
       </section>
-      <section className="schedule">
+      <section className='schedule'>
         {appointmentArray}
-        <Appointment key="last" time="5pm" />
+        <Appointment key='last' time='5pm' />
       </section>
     </main>
   );
