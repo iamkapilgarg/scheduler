@@ -16,7 +16,7 @@ export default function Application(props) {
     .then((response)=>{
       setDays(response.data);
     })
-  }, [])
+  }, []);
 
   const appointments = [
     {
