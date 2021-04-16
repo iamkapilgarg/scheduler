@@ -5,7 +5,6 @@ import DayList from 'components/DayList';
 import Appointment from 'components/Appointment/index';
 import axios from 'axios';
 import { getAppointmentsForDay, getInterview, getInterviewersForDay } from 'helpers/selectors';
-import useVisualMode from 'hooks/useVisualMode';
 
 
 export default function Application(props) {
@@ -41,10 +40,21 @@ export default function Application(props) {
       ...state.appointments,
       [id]: appointment
     };
-    setState({
-      ...state,
-      appointments
-    });
+
+    return new Promise((resolve, reject) => {
+      axios.put(`/api/appointments/${id}`, appointment)
+      .then((response)=>{
+        if(response.status === 204) {
+          setState({
+            ...state,
+            appointments
+          });
+          resolve();
+        } else {
+          reject();
+        }
+      })
+    })
   }
 
   const dailyAppointments = getAppointmentsForDay(state, state.day);
