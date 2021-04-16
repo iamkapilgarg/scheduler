@@ -31,6 +31,14 @@ const Appointment = (props) => {
     transition(SAVING);
   }
 
+  function deleteInterview() {
+    props.deleteInterview(props.id)
+    .then(() => {
+      console.log('inside then')
+      transition(EMPTY, true)
+    })
+  }
+
   return (
     <article className='appointment'>
       <Header
@@ -42,6 +50,7 @@ const Appointment = (props) => {
         <Show
           student={props.interview.student}
           interviewer={props.interview.interviewer}
+          onDelete={deleteInterview}
         />
       )}
       {mode === CREATE && <Form interviewers={props.interviewers} onCancel={() => back()} onSave={save} />}
