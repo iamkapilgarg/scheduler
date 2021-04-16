@@ -19,17 +19,8 @@ const getInterview = (state, interview) => {
 
 const getInterviewersForDay = (state, day) => {
   let dayData = state.days.find((d) => d.name === day);
-  let interviewerArray = [];
   if (dayData) {
-    for(let appId of dayData.appointments) {
-      let interview = state.appointments[appId].interview;
-      if(interview !== null && !interviewerArray.includes(interview.interviewer)) {
-        interviewerArray.push(interview.interviewer);
-      }
-    }
-  }
-  if(interviewerArray.length>0) {
-    return interviewerArray.map((id) => state.interviewers[id]);
+    return dayData.interviewers.map((id) => state.interviewers[id]);
   }
   return [];
 }
