@@ -12,6 +12,7 @@ const EMPTY = 'EMPTY';
 const SHOW = 'SHOW';
 const CREATE = 'CREATE';
 const SAVING = 'SAVING';
+const DELETING = 'DELETING';
 
 
 const Appointment = (props) => {
@@ -34,9 +35,9 @@ const Appointment = (props) => {
   function deleteInterview() {
     props.deleteInterview(props.id)
     .then(() => {
-      console.log('inside then')
-      transition(EMPTY, true)
+      transition(EMPTY);
     })
+    transition(DELETING)
   }
 
   return (
@@ -45,6 +46,7 @@ const Appointment = (props) => {
         time={props.time}
       />
       {mode === SAVING && <Status message='Saving...'/>}
+      {mode === DELETING && <Status message='Deleting...'/>}
       {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
       {mode === SHOW && (
         <Show
