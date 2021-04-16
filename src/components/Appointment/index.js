@@ -4,6 +4,7 @@ import Header from 'components/Appointment/Header';
 import Show from 'components/Appointment/Show';
 import Empty from 'components/Appointment/Empty';
 import useVisualMode from 'hooks/useVisualMode';
+import FORM from 'components/Appointment/Form'
 
 
 const EMPTY = 'EMPTY';
@@ -29,6 +30,7 @@ const Appointment = (props) => {
           interviewer={props.interview.interviewer}
         />
       )}
+      {mode === CREATE && <FORM interviewers={[]} onCancel={()=>back()}/>}
     </article>
   );
 }
