@@ -53,6 +53,8 @@ export default function Application(props) {
         } else {
           reject();
         }
+      }).catch((error) => {
+        reject(error);
       });
     });
   };
@@ -66,6 +68,8 @@ export default function Application(props) {
         } else {
           reject();
         }
+      }).catch((error) => {
+        reject(error);
       });
     });
   }

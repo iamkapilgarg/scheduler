@@ -7,6 +7,7 @@ import useVisualMode from 'hooks/useVisualMode';
 import Form from 'components/Appointment/Form'
 import Status from 'components/Appointment/Status';
 import Confirm from 'components/Appointment/Confirm';
+import Error from 'components/Appointment/Error'
 
 
 const EMPTY = 'EMPTY';
@@ -17,6 +18,8 @@ const DELETING = 'DELETING';
 const CONFIRM = 'CONFIRM';
 const EDIT = 'EDIT';
 const EDITING = 'EDITING';
+const ERROR_SAVE = 'ERROR_SAVE';
+const ERROR_DELETE = 'ERROR_DELETE';
 
 
 const Appointment = (props) => {
@@ -30,8 +33,12 @@ const Appointment = (props) => {
       student: name,
       interviewer
     };
-    props.bookInterview(props.id, interview).then(() => {
+    props.bookInterview(props.id, interview)
+    .then(() => {
       transition(SHOW);
+    })
+    .catch((error) => {
+      transition(ERROR_SAVE, true);
     })
     transition(SAVING);
   }
@@ -40,12 +47,14 @@ const Appointment = (props) => {
     props.deleteInterview(props.id)
       .then(() => {
         transition(EMPTY);
+      }).catch((error) => {
+        transition(ERROR_DELETE, true);
       })
-    transition(DELETING)
+    transition(DELETING, true);
   }
 
   const edit = () => {
-    transition(EDIT)
+    transition(EDIT);
   }
 
   const editBookingInDB = (name, interviewer) => {
@@ -55,12 +64,14 @@ const Appointment = (props) => {
     };
     props.bookInterview(props.id, interview).then(() => {
       transition(SHOW);
+    }).catch((error) => {
+      transition(ERROR_SAVE, true);
     })
     transition(EDITING);
   }
 
   const deleteInterview = () => {
-    transition(CONFIRM)
+    transition(CONFIRM);
   }
 
   return (
@@ -68,6 +79,8 @@ const Appointment = (props) => {
       <Header
         time={props.time}
       />
+      {mode === ERROR_DELETE && <Error message='Error while deleting appointment' onClose={()=>back()}/>}
+      {mode === ERROR_SAVE && <Error message='Error while saving appointment' onClose={()=>back()}/>}
       {mode === CONFIRM && <Confirm onConfirm={confirmDelete} onCancel={() => back()} message='Are you sure you would like to delete?' />}
       {mode === SAVING && <Status message='Saving...' />}
       {mode === DELETING && <Status message='Deleting...' />}
