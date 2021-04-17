@@ -7,6 +7,7 @@ const useApplicationData = () => {
   const SET_DAYS = "SET_DAYS";
   const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
   const SET_INTERVIEW = "SET_INTERVIEW";
+  const SET_WEB_SOCKET = "SET_WEB_SOCKET";
 
   const reducer = (state, action) => {
     switch (action.type) {
@@ -19,12 +20,37 @@ const useApplicationData = () => {
       case SET_INTERVIEW: {
         return { ...state, appointments: action.value.appointments };
       }
+      case SET_WEB_SOCKET: {
+        let appointments = {};
+        if (action.value.message.interview === null) {
+          const appointment = {
+            ...state.appointments[action.value.message.id],
+            interview: null
+          };
+          appointments = {
+            ...state.appointments,
+            [action.value.message.id]: appointment
+          };
+          return {...state, appointments}
+        } else {
+          const appointment = {
+            ...state.appointments[action.value.message.id],
+            interview: { ...action.value.message.interview }
+          };
+          appointments = {
+            ...state.appointments,
+            [action.value.message.id]: appointment
+          };
+          return {...state, appointments}
+        }
+      }
       default:
         throw new Error(
           `Tried to reduce with unsupported action type: ${action.type}`
         );
     }
   }
+
 
   const [state, dispatch] = useReducer(reducer, {
     day: 'Monday',
@@ -50,6 +76,14 @@ const useApplicationData = () => {
         dispatch({ type: SET_DAYS, value: { days: response.data } });
       })
   }, [state.appointments]);
+
+  useEffect(() => {
+    const socket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
+    socket.addEventListener('message', function (event) {
+      const message = JSON.parse(event.data)
+      dispatch({ type: SET_WEB_SOCKET, value: { message } });
+    });
+  }, [])
 
 
   const setDay = (day) => {
