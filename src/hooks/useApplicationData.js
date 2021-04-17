@@ -47,17 +47,12 @@ const useApplicationData = () => {
         return { ...state, days: action.value.days };
       case SET_APPLICATION_DATA:
         return { ...state, days: action.value.days, appointments: action.value.appointments, interviewers: action.value.interviewers };
-      case SET_INTERVIEW: {
+      case SET_INTERVIEW: 
         return { ...state, appointments: action.value.appointments };
-      }
-      case SET_WEB_SOCKET: {
-        const appointments = getAppointments(state, action.value.message);
-        return { ...state, appointments }
-      }
+      case SET_WEB_SOCKET: 
+        return { ...state, appointments: getAppointments(state, action.value.message) }
       default:
-        throw new Error(
-          `Tried to reduce with unsupported action type: ${action.type}`
-        );
+        throw new Error(`Tried to reduce with unsupported action type: ${action.type}`);
     }
   }
 
