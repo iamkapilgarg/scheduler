@@ -8,7 +8,7 @@ const useApplicationData = () => {
   const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
   const SET_INTERVIEW = "SET_INTERVIEW";
 
- const reducer = (state, action) => {
+  const reducer = (state, action) => {
     switch (action.type) {
       case SET_DAY:
         return { ...state, day: action.value };
@@ -17,7 +17,7 @@ const useApplicationData = () => {
       case SET_APPLICATION_DATA:
         return { ...state, days: action.value.days, appointments: action.value.appointments, interviewers: action.value.interviewers };
       case SET_INTERVIEW: {
-        return { ...state, days: action.value.days, appointments: action.value.appointments };
+        return { ...state, appointments: action.value.appointments };
       }
       default:
         throw new Error(
@@ -44,28 +44,19 @@ const useApplicationData = () => {
     })
   }, []);
 
+  useEffect(() => {
+    axios.get('api/days')
+      .then((response) => {
+        dispatch({ type: SET_DAYS, value: { days: response.data } });
+      })
+  }, [state.appointments]);
+
 
   const setDay = (day) => {
     dispatch({ type: SET_DAY, value: day });
   };
 
-
-  const getUpdatedDays = (dayName, daysArray, isCreated, isNew) => {
-    let daysClone = [...daysArray];
-    for (let day of daysClone) {
-      if (day.name === dayName) {
-        if (isCreated && isNew) {
-          day.spots--;
-        } else if (!isCreated) {
-          day.spots++;
-        }
-      }
-    }
-    return daysClone;
-  }
-
-
-  const bookInterview = (id, interview, isNew) => {
+  const bookInterview = (id, interview) => {
     const appointment = {
       ...state.appointments[id],
       interview: { ...interview }
@@ -76,14 +67,22 @@ const useApplicationData = () => {
     };
     return axios.put(`/api/appointments/${id}`, appointment)
       .then(() => {
-        dispatch({ type: SET_INTERVIEW, value: { appointments, days: getUpdatedDays(state.day, state.days, true, isNew) } });
+        dispatch({ type: SET_INTERVIEW, value: { appointments } });
       });
   };
 
   const deleteInterview = (id) => {
+    const appointment = {
+      ...state.appointments[id],
+      interview: null
+    };
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment
+    };
     return axios.delete(`/api/appointments/${id}`)
       .then(() => {
-        dispatch({ type: SET_DAYS, value: { days: getUpdatedDays(state.day, state.days, false, false) } });
+        dispatch({ type: SET_INTERVIEW, value: { appointments } });
       });
   };
   return { state, setDay, bookInterview, deleteInterview };
