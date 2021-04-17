@@ -24,6 +24,20 @@ const useApplicationData = () => {
     setState({ ...state, day })
   };
 
+  const getUpdatedDays = (dayName, daysArray, isCreated) => {
+    let daysClone = [ ...daysArray ];
+    for (let day of daysClone) {
+      if (day.name === dayName) {
+        if (isCreated) {
+          day.spots--;
+        } else {
+          day.spots++;
+        }
+      }
+    }
+    return daysClone;
+  }
+
   const bookInterview = (id, interview) => {
     const appointment = {
       ...state.appointments[id],
@@ -34,49 +48,20 @@ const useApplicationData = () => {
       [id]: appointment
     };
 
-    return new Promise((resolve, reject) => {
-      axios.put(`/api/appointments/${id}`, appointment)
-        .then((response) => {
-          if (response.status === 204) {
-            axios.get('/api/days').then((res)=>{
-              setState({
-                ...state,
-                appointments,
-                days: res.data
-              });
-            })
-            resolve();
-          } else {
-            reject();
-          }
-        }).catch((error) => {
-          reject(error);
-        });
-    });
+    return axios.put(`/api/appointments/${id}`, appointment)
+      .then(() => {
+        setState({ ...state, appointments, days: getUpdatedDays(state.day, state.days, true) });
+      });
   };
 
-
   const deleteInterview = (id) => {
-    return new Promise((resolve, reject) => {
-      axios.delete(`/api/appointments/${id}`)
-      .then((response) => {
-        if(response.status===204) {
-          axios.get('/api/days').then((res)=>{
-            setState({
-              ...state,
-              days: res.data
-            });
-          })
-          resolve();
-        } else {
-          reject();
-        }
-      }).catch((error) => {
-        reject(error);
+    return axios.delete(`/api/appointments/${id}`)
+      .then(() => {
+        setState({ ...state, days: getUpdatedDays(state.day, state.days, false) });
       });
-    });
-  }
-  return {state, setDay, bookInterview, deleteInterview};
+  };
+
+  return { state, setDay, bookInterview, deleteInterview };
 };
 
 export default useApplicationData;
