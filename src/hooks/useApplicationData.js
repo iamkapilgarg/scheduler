@@ -8,14 +8,7 @@ const useApplicationData = () => {
   const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
   const SET_INTERVIEW = "SET_INTERVIEW";
 
-  const [state, dispatch] = useReducer(reducer, {
-    day: 'Monday',
-    days: [],
-    appointments: {},
-    interviewers: {}
-  });
-
-  function reducer(state, action) {
+ const reducer = (state, action) => {
     switch (action.type) {
       case SET_DAY:
         return { ...state, day: action.value };
@@ -33,6 +26,14 @@ const useApplicationData = () => {
     }
   }
 
+  const [state, dispatch] = useReducer(reducer, {
+    day: 'Monday',
+    days: [],
+    appointments: {},
+    interviewers: {}
+  });
+
+
   useEffect(() => {
     Promise.all([
       axios.get('/api/days'),
@@ -43,9 +44,11 @@ const useApplicationData = () => {
     })
   }, []);
 
+
   const setDay = (day) => {
     dispatch({ type: SET_DAY, value: day });
   };
+
 
   const getUpdatedDays = (dayName, daysArray, isCreated, isNew) => {
     let daysClone = [...daysArray];
@@ -61,6 +64,7 @@ const useApplicationData = () => {
     return daysClone;
   }
 
+
   const bookInterview = (id, interview, isNew) => {
     const appointment = {
       ...state.appointments[id],
@@ -70,7 +74,6 @@ const useApplicationData = () => {
       ...state.appointments,
       [id]: appointment
     };
-
     return axios.put(`/api/appointments/${id}`, appointment)
       .then(() => {
         dispatch({ type: SET_INTERVIEW, value: { appointments, days: getUpdatedDays(state.day, state.days, true, isNew) } });
@@ -83,7 +86,6 @@ const useApplicationData = () => {
         dispatch({ type: SET_DAYS, value: { days: getUpdatedDays(state.day, state.days, false, false) } });
       });
   };
-
   return { state, setDay, bookInterview, deleteInterview };
 };
 
