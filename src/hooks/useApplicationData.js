@@ -38,10 +38,13 @@ const useApplicationData = () => {
       axios.put(`/api/appointments/${id}`, appointment)
         .then((response) => {
           if (response.status === 204) {
-            setState({
-              ...state,
-              appointments
-            });
+            axios.get('/api/days').then((res)=>{
+              setState({
+                ...state,
+                appointments,
+                days: res.data
+              });
+            })
             resolve();
           } else {
             reject();
@@ -58,6 +61,12 @@ const useApplicationData = () => {
       axios.delete(`/api/appointments/${id}`)
       .then((response) => {
         if(response.status===204) {
+          axios.get('/api/days').then((res)=>{
+            setState({
+              ...state,
+              days: res.data
+            });
+          })
           resolve();
         } else {
           reject();
