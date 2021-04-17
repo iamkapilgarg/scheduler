@@ -9,6 +9,36 @@ const useApplicationData = () => {
   const SET_INTERVIEW = "SET_INTERVIEW";
   const SET_WEB_SOCKET = "SET_WEB_SOCKET";
 
+  const getAppointments = (state, message) => {
+    const appointment = {
+      ...state.appointments[message.id],
+      interview: message.interview === null ? null : { ...message.interview }
+    };
+    const appointments = {
+      ...state.appointments,
+      [message.id]: appointment
+    };
+    return appointments;
+  }
+
+  const bookInterview = (id, interview) => {
+    const appointment = {
+      ...state.appointments[id],
+      interview: { ...interview }
+    };
+    return axios.put(`/api/appointments/${id}`, appointment)
+      .then(() => {
+        dispatch({ type: SET_INTERVIEW, value: { appointments: getAppointments(state, { id, interview }) } });
+      });
+  };
+
+  const deleteInterview = (id) => {
+    return axios.delete(`/api/appointments/${id}`)
+      .then(() => {
+        dispatch({ type: SET_INTERVIEW, value: { appointments: getAppointments(state, { id, interview: null }) } });
+      });
+  };
+
   const reducer = (state, action) => {
     switch (action.type) {
       case SET_DAY:
@@ -21,28 +51,8 @@ const useApplicationData = () => {
         return { ...state, appointments: action.value.appointments };
       }
       case SET_WEB_SOCKET: {
-        let appointments = {};
-        if (action.value.message.interview === null) {
-          const appointment = {
-            ...state.appointments[action.value.message.id],
-            interview: null
-          };
-          appointments = {
-            ...state.appointments,
-            [action.value.message.id]: appointment
-          };
-          return {...state, appointments}
-        } else {
-          const appointment = {
-            ...state.appointments[action.value.message.id],
-            interview: { ...action.value.message.interview }
-          };
-          appointments = {
-            ...state.appointments,
-            [action.value.message.id]: appointment
-          };
-          return {...state, appointments}
-        }
+        const appointments = getAppointments(state, action.value.message);
+        return { ...state, appointments }
       }
       default:
         throw new Error(
@@ -50,7 +60,6 @@ const useApplicationData = () => {
         );
     }
   }
-
 
   const [state, dispatch] = useReducer(reducer, {
     day: 'Monday',
@@ -61,6 +70,11 @@ const useApplicationData = () => {
 
 
   useEffect(() => {
+    const socket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
+    socket.addEventListener('message', function (event) {
+      const message = JSON.parse(event.data)
+      dispatch({ type: SET_WEB_SOCKET, value: { message } });
+    });
     Promise.all([
       axios.get('/api/days'),
       axios.get('/api/appointments'),
@@ -77,48 +91,10 @@ const useApplicationData = () => {
       })
   }, [state.appointments]);
 
-  useEffect(() => {
-    const socket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
-    socket.addEventListener('message', function (event) {
-      const message = JSON.parse(event.data)
-      dispatch({ type: SET_WEB_SOCKET, value: { message } });
-    });
-  }, [])
-
-
   const setDay = (day) => {
     dispatch({ type: SET_DAY, value: day });
   };
 
-  const bookInterview = (id, interview) => {
-    const appointment = {
-      ...state.appointments[id],
-      interview: { ...interview }
-    };
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment
-    };
-    return axios.put(`/api/appointments/${id}`, appointment)
-      .then(() => {
-        dispatch({ type: SET_INTERVIEW, value: { appointments } });
-      });
-  };
-
-  const deleteInterview = (id) => {
-    const appointment = {
-      ...state.appointments[id],
-      interview: null
-    };
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment
-    };
-    return axios.delete(`/api/appointments/${id}`)
-      .then(() => {
-        dispatch({ type: SET_INTERVIEW, value: { appointments } });
-      });
-  };
   return { state, setDay, bookInterview, deleteInterview };
 };
 
