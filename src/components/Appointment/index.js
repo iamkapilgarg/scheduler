@@ -33,7 +33,7 @@ const Appointment = (props) => {
       student: name,
       interviewer
     };
-    props.bookInterview(props.id, interview)
+    props.bookInterview(props.id, interview, true)
     .then(() => {
       transition(SHOW);
     })
@@ -63,7 +63,7 @@ const Appointment = (props) => {
       student: name,
       interviewer
     };
-    props.bookInterview(props.id, interview).then(() => {
+    props.bookInterview(props.id, interview, false).then(() => {
       transition(SHOW);
     }).catch((error) => {
       transition(ERROR_SAVE, true);
