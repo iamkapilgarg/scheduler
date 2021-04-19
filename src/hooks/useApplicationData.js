@@ -65,7 +65,7 @@ const useApplicationData = () => {
 
 
   useEffect(() => {
-    const socket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
+    const socket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL || 'ws://localhost:8001');
     socket.addEventListener('message', function (event) {
       const message = JSON.parse(event.data)
       dispatch({ type: SET_WEB_SOCKET, value: { message } });
