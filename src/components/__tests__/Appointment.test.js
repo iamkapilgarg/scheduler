@@ -1,13 +1,12 @@
-import React from 'react';
+import React from "react";
+import { render } from "@testing-library/react";
 
-import { render, cleanup } from '@testing-library/react';
-
-import Appointment from 'components/Appointment';
-
-afterEach(cleanup);
+import Appointment from "components/Appointment";
 
 describe("Appointment", () => {
-  it('renders without crashing', () => {
+
+  //renders component
+  it("renders without crashing", () => {
     render(<Appointment />);
-  });  
+  });
 });
