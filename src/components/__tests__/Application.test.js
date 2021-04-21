@@ -46,7 +46,6 @@ describe("Application", () => {
       appointment => queryByText(appointment, "Archie Cohen")
     );
     fireEvent.click(queryByAltText(appointment, "Edit"));
-    console.log(prettyDOM(appointment))
     fireEvent.click(getByAltText(appointment, "Sylvia Palmer"));
     fireEvent.click(getByText(appointment, "Save"));
     expect(getByText(appointment, "Editing...")).toBeInTheDocument();

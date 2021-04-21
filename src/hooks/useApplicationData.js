@@ -1,15 +1,12 @@
 import { useEffect, useReducer } from 'react';
 import axios from 'axios';
 import { useIsMount } from './useIsMount';
+import  reducer, {SET_DAY, SET_DAYS, SET_APPLICATION_DATA, SET_INTERVIEW, SET_WEB_SOCKET} from "reducers/application";
 
 const useApplicationData = () => {
 
   const isMount = useIsMount();
-  const SET_DAY = "SET_DAY";
-  const SET_DAYS = "SET_DAYS";
-  const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
-  const SET_INTERVIEW = "SET_INTERVIEW";
-  const SET_WEB_SOCKET = "SET_WEB_SOCKET";
+  
 
   const getAppointments = (state, message) => {
     const appointment = {
@@ -41,23 +38,7 @@ const useApplicationData = () => {
       });
   };
 
-  const reducer = (state, action) => {
-    
-    switch (action.type) {
-      case SET_DAY:
-        return { ...state, day: action.value };
-      case SET_DAYS:
-        return { ...state, days: action.value.days };
-      case SET_APPLICATION_DATA:
-        return { ...state, days: action.value.days, appointments: action.value.appointments, interviewers: action.value.interviewers };
-      case SET_INTERVIEW: 
-        return { ...state, appointments: action.value.appointments };
-      case SET_WEB_SOCKET: 
-        return { ...state, appointments: getAppointments(state, action.value.message) }
-      default:
-        throw new Error(`Tried to reduce with unsupported action type: ${action.type}`);
-    }
-  }
+  
 
   const [state, dispatch] = useReducer(reducer, {
     day: 'Monday',
@@ -94,7 +75,7 @@ const useApplicationData = () => {
     .then((response) => {
         dispatch({ type: SET_DAYS, value: { days: response.data } });
       })
-  }, [state.appointments]);
+  }, [state.appointments, isMount]);
 
 
   const setDay = (day) => {
