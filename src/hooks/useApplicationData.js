@@ -70,19 +70,16 @@ const useApplicationData = () => {
  
 
   useEffect(() => {
-    console.log('axios all, ',state)
     const socket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL || 'ws://localhost:8001');
     socket.addEventListener('message', function (event) {
       const message = JSON.parse(event.data)
       dispatch({ type: SET_WEB_SOCKET, value: { message } });
     });
-    console.log('kapil ', state)
     Promise.all([
       axios.get('/api/days'),
       axios.get('/api/appointments'),
       axios.get('/api/interviewers')
     ]).then((all) => {
-      console.log('he ', state)
       dispatch({ type: SET_APPLICATION_DATA, value: { days: all[0].data, appointments: all[1].data, interviewers: all[2].data } });
     })
   }, []);
