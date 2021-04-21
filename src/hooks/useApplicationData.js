@@ -1,8 +1,10 @@
 import { useEffect, useReducer } from 'react';
 import axios from 'axios';
+import { useIsMount } from './useIsMount';
 
 const useApplicationData = () => {
 
+  const isMount = useIsMount();
   const SET_DAY = "SET_DAY";
   const SET_DAYS = "SET_DAYS";
   const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
@@ -40,6 +42,7 @@ const useApplicationData = () => {
   };
 
   const reducer = (state, action) => {
+    
     switch (action.type) {
       case SET_DAY:
         return { ...state, day: action.value };
@@ -64,27 +67,38 @@ const useApplicationData = () => {
   });
 
 
+ 
+
   useEffect(() => {
+    console.log('axios all, ',state)
     const socket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL || 'ws://localhost:8001');
     socket.addEventListener('message', function (event) {
       const message = JSON.parse(event.data)
       dispatch({ type: SET_WEB_SOCKET, value: { message } });
     });
+    console.log('kapil ', state)
     Promise.all([
       axios.get('/api/days'),
       axios.get('/api/appointments'),
       axios.get('/api/interviewers')
     ]).then((all) => {
+      console.log('he ', state)
       dispatch({ type: SET_APPLICATION_DATA, value: { days: all[0].data, appointments: all[1].data, interviewers: all[2].data } });
     })
   }, []);
 
+  
   useEffect(() => {
-    axios.get('api/days')
-      .then((response) => {
+    //console.log('axios days')
+    //Promise.all([
+      if (!isMount) 
+        axios.get('/api/days')
+    //])
+    .then((response) => {
         dispatch({ type: SET_DAYS, value: { days: response.data } });
       })
   }, [state.appointments]);
+
 
   const setDay = (day) => {
     dispatch({ type: SET_DAY, value: day });
