@@ -1,3 +1,12 @@
+
+/**
+ * This function returns appointment for the provided day
+ * from the state
+ *
+ * @param {*} state
+ * @param {*} day
+ * @return {*} 
+ */
 const getAppointmentsForDay = (state, day) => {
   let dayData = state.days.find((d) => d.name === day);
   if (dayData) {
@@ -6,6 +15,13 @@ const getAppointmentsForDay = (state, day) => {
   return [];
 }
 
+/**
+ * This function returns the interview object
+ *
+ * @param {*} state
+ * @param {*} interview
+ * @return {*} 
+ */
 const getInterview = (state, interview) => {
   if (interview) {
     const obj = {
@@ -17,6 +33,13 @@ const getInterview = (state, interview) => {
   return null;
 }
 
+/**
+ *This function will return all the interviewers for the provided day
+ *
+ * @param {*} state
+ * @param {*} day
+ * @return {*} 
+ */
 const getInterviewersForDay = (state, day) => {
   let dayData = state.days.find((d) => d.name === day);
   if (dayData) {

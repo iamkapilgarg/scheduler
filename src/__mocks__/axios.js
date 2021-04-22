@@ -1,3 +1,7 @@
+/**
+ * This is a mock axios response to run the tests
+ * for axios api calls.
+ */
 const fixtures = {
   days: [
     {

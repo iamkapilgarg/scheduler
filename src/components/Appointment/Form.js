@@ -8,16 +8,29 @@ const Form = (props) => {
   const [interviewer, setInterviewer] = useState(props.interviewer || null);
   const [error, setError] = useState("");
 
+  /**
+   * It resets the form. 
+   * This will run when user click cancels
+   */
   const reset = () => {
     setName('');
     setInterviewer(null);
   }
 
+  /**
+   * Click cancel functionality
+   */
   const cancel = () => {
     reset();
     props.onCancel();
   }
 
+  /**
+   * It validates if the student or interviewer
+   * is present in the form or not.
+   *
+   * @return {*} 
+   */
   const validate = () =>{
     if (name === ''){
       setError('Student name cannot be blank');

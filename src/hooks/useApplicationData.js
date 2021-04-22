@@ -8,6 +8,14 @@ const useApplicationData = () => {
   const isMount = useIsMount();
   
 
+  /**
+   * This function creates and updates the current state with
+   * the appointment information received in the wesocket message
+   *
+   * @param {*} state
+   * @param {*} message
+   * @return {*} 
+   */
   const getAppointments = (state, message) => {
     const appointment = {
       ...state.appointments[message.id],
@@ -20,6 +28,13 @@ const useApplicationData = () => {
     return appointments;
   }
 
+  /**
+   * Axios call to create an appointment and then update state
+   *
+   * @param {*} id
+   * @param {*} interview
+   * @return {*} 
+   */
   const bookInterview = (id, interview) => {
     const appointment = {
       ...state.appointments[id],
@@ -31,6 +46,12 @@ const useApplicationData = () => {
       });
   };
 
+  /**
+   * Axios call to delete an appointment and then update the state
+   *
+   * @param {*} id
+   * @return {*} 
+   */
   const deleteInterview = (id) => {
     return axios.delete(`/api/appointments/${id}`)
       .then(() => {
@@ -38,17 +59,13 @@ const useApplicationData = () => {
       });
   };
 
-  
 
   const [state, dispatch] = useReducer(reducer, {
     day: 'Monday',
     days: [],
     appointments: {},
     interviewers: {}
-  });
-
-
- 
+  }); 
 
   useEffect(() => {
     const socket = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL || 'ws://localhost:8001');

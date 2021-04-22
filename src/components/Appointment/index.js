@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import 'components/Appointment/styles.scss'
 import Header from 'components/Appointment/Header';
 import Show from 'components/Appointment/Show';
@@ -37,21 +37,32 @@ const Appointment = (props) => {
     }
   }, [props.interview, transition, mode]);
 
+  /**
+   * It saves the appointment. It will further update the
+   * database.
+   *
+   * @param {*} name
+   * @param {*} interviewer
+   */
   const save = (name, interviewer) => {
     const interview = {
       student: name,
       interviewer
     };
     props.bookInterview(props.id, interview, true)
-    .then(() => {
-      transition(SHOW);
-    })
-    .catch((error) => {
-      transition(ERROR_SAVE, true);
-    })
+      .then(() => {
+        transition(SHOW);
+      })
+      .catch((error) => {
+        transition(ERROR_SAVE, true);
+      })
     transition(SAVING);
   }
 
+  /**
+   * This function will further delete the record
+   * from the database.
+   */
   const confirmDelete = () => {
     props.deleteInterview(props.id)
       .then(() => {
@@ -66,6 +77,12 @@ const Appointment = (props) => {
     transition(EDIT);
   }
 
+  /**
+   * Functionality for editing the interview
+   *
+   * @param {*} name
+   * @param {*} interviewer
+   */
   const editBookingInDB = (name, interviewer) => {
     const interview = {
       student: name,
@@ -79,6 +96,10 @@ const Appointment = (props) => {
     transition(EDITING);
   }
 
+  /**
+   * Confirm before deleting.
+   *
+   */
   const deleteInterview = () => {
     transition(CONFIRM);
   }
@@ -88,14 +109,14 @@ const Appointment = (props) => {
       <Header
         time={props.time}
       />
-      {mode === ERROR_DELETE && <Error message='Error while deleting appointment' onClose={()=>back()}/>}
-      {mode === ERROR_SAVE && <Error message='Error while saving appointment' onClose={()=>back()}/>}
+      {mode === ERROR_DELETE && <Error message='Error while deleting appointment' onClose={() => back()} />}
+      {mode === ERROR_SAVE && <Error message='Error while saving appointment' onClose={() => back()} />}
       {mode === CONFIRM && <Confirm onConfirm={confirmDelete} onCancel={() => back()} message='Are you sure you would like to delete?' />}
       {mode === SAVING && <Status message='Saving...' />}
       {mode === DELETING && <Status message='Deleting...' />}
       {mode === EDITING && <Status message='Editing...' />}
       {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
-      {mode === SHOW && props.interview &&(
+      {mode === SHOW && props.interview && (
         <Show
           student={props.interview.student}
           interviewer={props.interview.interviewer}
